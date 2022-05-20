@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useQuery, gql } from "@apollo/client";
 import {
   FlatList,
   View,
@@ -14,45 +13,40 @@ import Loader from "react-loader-spinner";
 
 import { style } from "./style";
 import { PokemonListCell } from "./PokemonListCell";
+const contentful = require('contentful')
 
-const POKEMON_LIST = gql`
-  {
-    pokemonCollection {
-      items {
-        name
-        image {
-          url
-        }
-        number
-        resistant
-        height
-        weight
-        classification
-        sys {
-          id
-        }
-      }
-    }
-  }
-`;
+export const contentfulClient = contentful.createClient({
+  space: '8gp2519ce6g7', // defaults to 'master' if not set
+  accessToken: 'kvm2VUGHVBBgpcJVWrcwihRoHfLLXEKtHs4XbmhOlZs'
+})
+
 
 export const PokemonList = function PokemonList(props) {
   const [pokemon, setPokemon] = useState([]);
-  const [filteredPokemon, setFilteredPokemon] = useState([]);
-  const { loading, error, data } = useQuery(POKEMON_LIST);
+  const [loading, setloading] = useState(true);
+  const [error, setError] = useState(null);
+
+
 
   useEffect(
     function setPokemonFromApi() {
-      setPokemon(idx(data, _ => _.pokemonCollection.items) || []);
+      const fetchPokemon = async () => {
+      const resp = await contentfulClient.getEntries({content_type: "pokemon"})
+      setPokemon(resp.items)
+      setloading(false)
+    }
+    fetchPokemon()
     },
-    [data]
+    []
   );
+  
 
-  if (!data && loading) {
+  if (!pokemon && loading) {
     return <div>Loading</div>;
   }
 
-  if (!data || error) {
+  if (!pokemon || error) {
+    console.log(pokemon, error)
     return (
       <div>
         Unable to fetch course information, please try again or contact support
@@ -74,7 +68,6 @@ export const PokemonList = function PokemonList(props) {
     <View style={style.container}>
       <h1>Pokemon</h1>
       <View style={style.picker}>
-        <Text>Sort: </Text>
         <Picker
           style={{ flex: 1 }}
           multiple={false}
@@ -82,8 +75,9 @@ export const PokemonList = function PokemonList(props) {
             sortBy(itemValue);
           }}
         >
-          <Picker.Item label="Numerically" value="number" />
-          <Picker.Item label="Alphabetically" value="name" />
+          <Picker.Item label='Sort' value='0' />
+          <Picker.Item label="Height" value="fields.height" />
+          <Picker.Item label="Alphabetically" value="fields.name" />
         </Picker>
       </View>
       {loading ? (

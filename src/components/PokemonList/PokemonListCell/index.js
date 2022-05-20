@@ -6,18 +6,19 @@ import { style } from "./style";
 
 export const PokemonListCell = function PokemonListCell(props) {
   const { pokemon } = props;
+  console.log(pokemon.fields.image, "poke")
   return (
     <View style={style.cell}>
       <Link style={{ flex: 1 }} to={`/pokemon/${pokemon.sys.id}`}>
-        <ImageBackground source={pokemon.image.url} style={style.pokemonImage}>
+        <ImageBackground source={pokemon.fields.image.fields.file.url} style={style.pokemonImage}>
           <View style={style.pokemonBio}>
-            <Text style={style.pokemonTitle}>{pokemon.name}</Text>
-            <Text style={style.pokemonText}>Height: {pokemon.height} ft</Text>
-            <Text style={style.pokemonText}>Weight: {pokemon.weight} lbs</Text>
+            <Text style={style.pokemonTitle}>{pokemon.fields.name}</Text>
+            <Text style={style.pokemonText}>Height: {pokemon.fields.height} ft</Text>
+            <Text style={style.pokemonText}>Weight: {pokemon.fields.weight} lbs</Text>
             <Text style={style.pokemonText}>
-              Classification: {pokemon.classification}
+              Classification: {pokemon.fields.classification}
             </Text>
-            <Text style={style.pokemonText}># {pokemon.number}</Text>
+            <Text style={style.pokemonText}># {pokemon.fields.number}</Text>
           </View>
         </ImageBackground>
       </Link>
