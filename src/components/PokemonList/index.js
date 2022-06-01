@@ -48,7 +48,7 @@ export const PokemonList = function PokemonList(props) {
   }
   function renderItem({ item: pokemon }) {
     if (pokemon.sys.contentType.sys.id === "pokemon") {return <PokemonListCell pokemon={pokemon} />};
-    return null
+    return <div style={style.wrongTile}>This is not a Pokemon it is a {pokemon.sys.contentType.sys.id} content type </div>
   }
 
   function sortBy(attr) {
