@@ -25,7 +25,17 @@ export const PokemonList = function PokemonList(props) {
   useEffect(
     function setPokemonFromApi() {
       const fetchPokemon = async () => {
-      const resp = await contentfulClient.getEntries() //How do I retrieve Contentful entries?
+      const resp = await contentfulClient.getEntries() /* Question 3a)How do I filter my entries? Right now
+                                                          We receive all content types
+                                                          We render an error if it is not a Pokemon
+                                                          but we need a better solution where we just
+                                                          retrieve entries of the Pokemon content type.
+
+                                                          Question 3b)Can we also sort these Pokemon? I made Mr Mime recently
+                                                          But now he shows up first. I want them ordered by name.
+
+                                                          Question 4) We have this entry here why is it showing on this site?                                                                                                        
+                                                      */
       setPokemon(resp.items)
       setloading(false)
     }
