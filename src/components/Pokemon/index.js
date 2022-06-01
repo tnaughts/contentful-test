@@ -1,46 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { View, Text, Image } from "react-native-web";
 import idx from "idx";
 import Loader from "react-loader-spinner";
 import { Link } from "react-router-dom";
+import {contentfulClient} from "../../Contentful"
 
 import { style } from "./style";
 
-const POKEMON = gql`
-  query pokemon($id: String!) {
-    pokemon(id: $id) {
-      name
-      sys {
-        id
-      }
-      image {
-        url
-      }
-      number
-      resistant
-      height
-      weight
-      classification
-      evolutionsCollection {
-        items {
-          name
-          sys {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
 
 export const Pokemon = function Pokemon(props) {
-  const { loading, error, data } = useQuery(POKEMON, {
-    variables: { id: idx(props, _ => _.match.params.id) }
-  });
-  const pokemon = idx(data, _ => _.pokemon);
+  const [pokemon, setPokemon] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  if (!data && loading) {
+    useEffect(() => {
+    const fetchData = async () => {
+      setError(false);
+      try {
+        const result = await contentfulClient.getEntry(idx(props, _ => _.match.params.id)) //How do I retrieve a single entry
+        setPokemon(result);
+
+      } catch (error) {
+        setError(true);
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (!pokemon && loading) {
     return (
       <View style={style.loader}>
         <Loader
@@ -48,13 +39,12 @@ export const Pokemon = function Pokemon(props) {
           color="#00BFFF"
           height={100}
           width={100}
-          timeout={3000}
-        />
+          timeout={3000}/>
       </View>
-    );
+    )
   }
 
-  if (!data || error) {
+  if (!pokemon || error) {
     return (
       <div>
         Unable to fetch course information, please try again or contact support
@@ -63,7 +53,8 @@ export const Pokemon = function Pokemon(props) {
   }
 
   function renderEvolutions() {
-    if (pokemon.evolutionsCollection.items.length > 0) {
+    return (<div></div>)
+    if (pokemon.fields.evolutionsCollection.items.length > 0) {
       return (
         <>
           <Text style={style.pokemonText}>Evolutions: </Text>
@@ -83,14 +74,14 @@ export const Pokemon = function Pokemon(props) {
   function renderPokemon() {
     return (
       <View style={style.container}>
-        <Text style={style.title}>{pokemon.name}</Text>
-        <Image source={pokemon.image.url} style={style.image} />
+        <Text style={style.title}>{pokemon.fields.name}</Text>
+        <Image source={pokemon.fields.image.fields.file.url} style={style.image} />
         <View>
-          <Text style={style.pokemonText}># {pokemon.number}</Text>
-          <Text style={style.pokemonText}>Height: {pokemon.height} ft</Text>
-          <Text style={style.pokemonText}>Weight: {pokemon.weight} lbs</Text>
+          <Text style={style.pokemonText}># {pokemon.fields.number}</Text>
+          <Text style={style.pokemonText}>Height: {pokemon.fields.height} ft</Text>
+          <Text style={style.pokemonText}>Weight: {pokemon.fields.weight} lbs</Text>
           <Text style={style.pokemonText}>
-            Classification: {pokemon.classification}
+            Classification: {pokemon.fields.classification}
           </Text>
           <Text style={style.pokemonText}>
             {pokemon.resistant

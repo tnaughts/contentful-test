@@ -7,14 +7,13 @@ import {
   ApolloProvider
 } from "@apollo/client";
 import { setContext } from "apollo-link-context";
-import {contentfulClient } from "./Contentful"
 
 import App from "./App";
 
 const httpLink = createHttpLink({
   uri: "https://graphql.contentful.com/content/v1/spaces/8gp2519ce6g7"
 });
-console.log(contentfulClient)
+
 const authLink = setContext((_, { headers }) => {
   // return the headers to the context so httpLink can read them
   return {

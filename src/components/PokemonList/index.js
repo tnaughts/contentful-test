@@ -13,12 +13,7 @@ import Loader from "react-loader-spinner";
 
 import { style } from "./style";
 import { PokemonListCell } from "./PokemonListCell";
-const contentful = require('contentful')
-
-export const contentfulClient = contentful.createClient({
-  space: '8gp2519ce6g7', // defaults to 'master' if not set
-  accessToken: 'kvm2VUGHVBBgpcJVWrcwihRoHfLLXEKtHs4XbmhOlZs'
-})
+import {contentfulClient} from "../../Contentful"
 
 
 export const PokemonList = function PokemonList(props) {
@@ -27,11 +22,10 @@ export const PokemonList = function PokemonList(props) {
   const [error, setError] = useState(null);
 
 
-
   useEffect(
     function setPokemonFromApi() {
       const fetchPokemon = async () => {
-      const resp = await contentfulClient.getEntries({content_type: "pokemon"})
+      const resp = await contentfulClient.getEntries() //How do I retrieve Contentful entries?
       setPokemon(resp.items)
       setloading(false)
     }
@@ -46,7 +40,6 @@ export const PokemonList = function PokemonList(props) {
   }
 
   if (!pokemon || error) {
-    console.log(pokemon, error)
     return (
       <div>
         Unable to fetch course information, please try again or contact support
@@ -54,7 +47,8 @@ export const PokemonList = function PokemonList(props) {
     );
   }
   function renderItem({ item: pokemon }) {
-    return <PokemonListCell pokemon={pokemon} />;
+    if (pokemon.sys.contentType.sys.id === "pokemon") {return <PokemonListCell pokemon={pokemon} />};
+    return null
   }
 
   function sortBy(attr) {
@@ -63,6 +57,7 @@ export const PokemonList = function PokemonList(props) {
       setPokemon(sortedPokemon);
     }
   }
+
 
   return (
     <View style={style.container}>
