@@ -34,5 +34,15 @@ export const style = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%'
+  },
+  wrongTile: {
+    flex: .5,
+    height: '300px',
+    width: '300px',
+    padding: '10px',
+    borderWidth: '1px',
+    borderColor: 'black',
+    color: 'red',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   }
 }
