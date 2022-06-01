@@ -18,7 +18,12 @@ export const Pokemon = function Pokemon(props) {
     const fetchData = async () => {
       setError(false);
       try {
-        const result = await contentfulClient.getEntry(idx(props, _ => _.match.params.id)) //How do I retrieve a single entry
+        const result = await contentfulClient.getOneEntry() /* 
+                                                           Question 2) How do I retrieve a single entry? We have our id param in the URL
+                                                          That id can be accessed with this:
+                                                          idx(props, _ => _.match.params.id) but we do not know
+                                                          what the call in Contentful is to get just a single entry.                                                 
+                                                          */
         setPokemon(result);
 
       } catch (error) {
@@ -47,7 +52,7 @@ export const Pokemon = function Pokemon(props) {
   if (!pokemon || error) {
     return (
       <div>
-        Unable to fetch course information, please try again or contact support
+        Unable to fetch Pokemon information, please try again or contact support
       </div>
     );
   }
