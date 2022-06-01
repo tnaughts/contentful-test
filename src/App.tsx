@@ -9,15 +9,9 @@ import {
 
 import {Pokemon}        from './components/Pokemon'
 import {PokemonList}    from './components/PokemonList'
-const contentful = require('contentful')
-
-export const contentfulClient = contentful.createClient({
-  space: '8gp2519ce6g7', // defaults to 'master' if not set
-  accessToken: 'kvm2VUGHVBBgpcJVWrcwihRoHfLLXEKtHs4XbmhOlZs'
-})
 
 const App = () => (
-  <div props={contentfulClient}>
+  <div>
     <HashRouter>
         <div className="content">
           <Route exact path="/" component={PokemonList}/>

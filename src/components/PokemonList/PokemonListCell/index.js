@@ -6,7 +6,6 @@ import { style } from "./style";
 
 export const PokemonListCell = function PokemonListCell(props) {
   const { pokemon } = props;
-  console.log(pokemon.fields.image, "poke")
   return (
     <View style={style.cell}>
       <Link style={{ flex: 1 }} to={`/pokemon/${pokemon.sys.id}`}>
